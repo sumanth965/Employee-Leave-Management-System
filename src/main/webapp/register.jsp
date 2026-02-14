@@ -2,14 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Corporate Login</title>
+  <title>Employee Registration</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="relative min-h-screen bg-gray-50 flex items-center justify-center font-sans overflow-hidden">
-
-  <!-- ===== Subtle Corporate Wave Background ===== -->
+<body class="min-h-screen bg-gray-50 flex items-center justify-center font-sans">
+<!-- ===== Subtle Corporate Wave Background ===== -->
   <div class="absolute inset-0 -z-10 overflow-hidden">
 
     <!-- Back Soft Wave -->
@@ -45,23 +43,19 @@
   </div>
   <!-- ===== End Background ===== -->
 
+<form action="RegisterServlet" method="post"
+  class="bg-white w-full max-w-md p-12 border border-slate-200 rounded-lg shadow-sm">
 
-  <!-- ===== Login Card ===== -->
-  <!-- ===== Ultra Minimal Executive Login Card ===== -->
-<form action="LoginServlet" method="post"
-  class="relative bg-white w-full max-w-md p-12 border border-slate-200 rounded-lg shadow-sm">
-
-  <!-- Brand -->
   <div class="mb-12 text-center">
     <h1 class="text-xl font-semibold text-slate-800 tracking-wide">
-      Company Portal
+      Employee Registration
     </h1>
     <p class="text-xs text-slate-500 mt-2 uppercase tracking-widest">
-      Secure Employee Access
+      Create Account
     </p>
   </div>
 
-  <div class="space-y-10">
+  <div class="space-y-8">
 
     <!-- Username -->
     <div>
@@ -69,9 +63,7 @@
         Username
       </label>
       <input type="text" name="username" required
-        class="w-full bg-transparent border-b border-slate-300 py-2
-               focus:border-slate-800 focus:outline-none
-               transition-colors duration-200">
+        class="w-full border-b border-slate-300 py-2 focus:border-slate-800 focus:outline-none">
     </div>
 
     <!-- Password -->
@@ -80,46 +72,36 @@
         Password
       </label>
       <input type="password" name="password" required
-        class="w-full bg-transparent border-b border-slate-300 py-2
-               focus:border-slate-800 focus:outline-none
-               transition-colors duration-200">
+        class="w-full border-b border-slate-300 py-2 focus:border-slate-800 focus:outline-none">
+    </div>
+
+    <!-- Role -->
+    <div>
+      <label class="block text-xs font-medium text-slate-500 uppercase tracking-widest mb-3">
+        Role
+      </label>
+      <select name="role" required
+        class="w-full border-b border-slate-300 py-2 focus:border-slate-800 focus:outline-none">
+        <option value="employee">Employee</option>
+        <option value="manager">Manager</option>
+      </select>
     </div>
 
   </div>
 
-  <!-- Options -->
-  <div class="flex items-center justify-between mt-10 text-xs">
-    <label class="flex items-center space-x-2 text-slate-600">
-      <input type="checkbox"
-        class="rounded border-slate-300 text-slate-800 focus:ring-slate-500">
-      <span>Remember me</span>
-    </label>
-
-    <a href="#" class="text-slate-600 hover:text-slate-800 transition">
-      Forgot password
-    </a>
-  </div>
-
-  <!-- Button -->
   <button type="submit"
-    class="w-full mt-12 bg-slate-800 hover:bg-slate-900
-           text-white py-3 rounded-md
-           font-medium tracking-wide
-           transition duration-200">
-    Sign In
+    class="w-full mt-12 bg-slate-800 hover:bg-slate-900 text-white py-3 rounded-md font-medium tracking-wide">
+    Register
   </button>
 
-  <!-- Footer Link -->
-  <p class="text-center text-xs text-slate-400 mt-10">
-    Need access?
-    <a href="#" class="text-slate-600 hover:text-slate-800">
-      Contact Administrator
+  <p class="text-center text-xs text-slate-400 mt-8">
+    Already have an account?
+    <a href="login.jsp" class="text-slate-600 hover:text-slate-800">
+      Login
     </a>
   </p>
 
 </form>
-
-  <!-- ===== End Card ===== -->
 
 </body>
 </html>

@@ -8,6 +8,26 @@ import model.User;
 import util.DBConnection;
 
 public class UserDAO {
+	public static boolean register(User user, String password) {
+
+	    String sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+
+	    try (Connection con = DBConnection.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, user.getUsername());
+	        ps.setString(2, password);
+	        ps.setString(3, user.getRole());
+
+	        int rows = ps.executeUpdate();
+	        return rows > 0;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return false;
+	}
 
     public static User validate(String username, String password) {
 

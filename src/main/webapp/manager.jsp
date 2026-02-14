@@ -21,7 +21,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
-<body style="font-family: 'Sora', sans-serif;" class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen relative overflow-hidden">
+<body style="font-family: 'Sora', sans-serif;" class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen relative overflow-auto">
     
     <!-- Animated background elements -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
