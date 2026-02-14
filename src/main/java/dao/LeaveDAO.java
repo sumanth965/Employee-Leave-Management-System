@@ -27,8 +27,7 @@ public class LeaveDAO {
             ps.setString(4, l.getReason());
             ps.setString(5, "Pending");
 
-            int rows = ps.executeUpdate();
-            return rows > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,29 +37,19 @@ public class LeaveDAO {
     }
 
     // =====================================
-    // 2️⃣ Get All Leave Requests (Manager)
+    // 2️⃣ Get All Leave Requests
     // =====================================
     public static List<Leave> getAllLeaves() {
 
         List<Leave> list = new ArrayList<>();
-        String sql = "SELECT * FROM leaves";
+        String sql = "SELECT * FROM leaves ORDER BY id DESC";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-
-                Leave l = new Leave();
-
-                l.setId(rs.getInt("id"));
-                l.setUserId(rs.getInt("user_id"));
-                l.setStartDate(rs.getString("start_date"));
-                l.setEndDate(rs.getString("end_date"));
-                l.setReason(rs.getString("reason"));
-                l.setStatus(rs.getString("status"));
-
-                list.add(l);
+                list.add(extractLeave(rs));
             }
 
         } catch (Exception e) {
@@ -71,7 +60,59 @@ public class LeaveDAO {
     }
 
     // =====================================
-    // 3️⃣ Update Leave Status (Approve/Reject)
+    // 3️⃣ Pagination Method (IMPORTANT)
+    // =====================================
+    public static List<Leave> getLeavesPaginated(int page, int limit) {
+
+        List<Leave> list = new ArrayList<>();
+        int offset = (page - 1) * limit;
+
+        String sql = "SELECT * FROM leaves ORDER BY id DESC LIMIT ? OFFSET ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(extractLeave(rs));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    // =====================================
+    // 4️⃣ Get Total Leave Count
+    // =====================================
+    public static int getTotalLeaveCount() {
+
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM leaves";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    // =====================================
+    // 5️⃣ Update Leave Status
     // =====================================
     public static boolean updateStatus(int id, String status) {
 
@@ -83,13 +124,28 @@ public class LeaveDAO {
             ps.setString(1, status);
             ps.setInt(2, id);
 
-            int rows = ps.executeUpdate();
-            return rows > 0;
+            return ps.executeUpdate() > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return false;
+    }
+
+    // =====================================
+    // 🔹 Utility Method (Cleaner Code)
+    // =====================================
+    private static Leave extractLeave(ResultSet rs) throws Exception {
+
+        Leave l = new Leave();
+        l.setId(rs.getInt("id"));
+        l.setUserId(rs.getInt("user_id"));
+        l.setStartDate(rs.getString("start_date"));
+        l.setEndDate(rs.getString("end_date"));
+        l.setReason(rs.getString("reason"));
+        l.setStatus(rs.getString("status"));
+
+        return l;
     }
 }
