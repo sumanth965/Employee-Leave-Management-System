@@ -13,7 +13,7 @@
   <div class="absolute inset-0 -z-10 overflow-hidden">
 
     <!-- Back Soft Wave -->
-    <svg class="absolute bottom-0 w-full h-64"
+    <svg class="absolute bottom-0 w-full h-56"
          viewBox="0 0 1440 320">
       <path fill="#e2e8f0" opacity="0.6">
         <animate attributeName="d"
@@ -87,20 +87,7 @@
 
   </div>
 
-  <!-- Options -->
-  <div class="flex items-center justify-between mt-10 text-xs">
-    <label class="flex items-center space-x-2 text-slate-600">
-      <input type="checkbox"
-        class="rounded border-slate-300 text-slate-800 focus:ring-slate-500">
-      <span>Remember me</span>
-    </label>
-
-    <a href="#" class="text-slate-600 hover:text-slate-800 transition">
-      Forgot password
-    </a>
-  </div>
-
-  <!-- Button -->
+   <!-- Button -->
   <button type="submit"
     class="w-full mt-12 bg-slate-800 hover:bg-slate-900
            text-white py-3 rounded-md

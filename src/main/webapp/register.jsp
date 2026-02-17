@@ -111,7 +111,7 @@
 
     <p class="text-center text-xs text-slate-400 mt-8">
       <a href="manager.jsp" class="text-slate-600 hover:text-slate-800">
-        ← Back to Dashboard
+        Go Back to Dashboard
       </a>
     </p>
 
