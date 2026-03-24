@@ -25,7 +25,7 @@ public class ApplyLeaveServlet extends HttpServlet {
 
         // If session expired
         if (session == null) {
-            res.sendRedirect("login.jsp");
+            res.sendRedirect(req.getContextPath() + "/login.jsp");
             return;
         }
 
@@ -33,7 +33,12 @@ public class ApplyLeaveServlet extends HttpServlet {
 
         // If user not found in session
         if (user == null) {
-            res.sendRedirect("login.jsp");
+            res.sendRedirect(req.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        if (!"employee".equalsIgnoreCase(user.getRole())) {
+            res.sendRedirect(req.getContextPath() + "/manager.jsp");
             return;
         }
 
@@ -46,6 +51,6 @@ public class ApplyLeaveServlet extends HttpServlet {
 
         LeaveDAO.applyLeave(leave);
 
-        res.sendRedirect("employee.jsp");
+        res.sendRedirect(req.getContextPath() + "/employee.jsp");
     }
 }

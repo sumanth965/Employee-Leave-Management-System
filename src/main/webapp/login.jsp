@@ -99,7 +99,7 @@
   <!-- Footer Link -->
   <p class="text-center text-xs text-slate-400 mt-10">
     Need access?
-    <a href="#" class="text-slate-600 hover:text-slate-800">
+    <a href="mailto:admin@company.com" class="text-slate-600 hover:text-slate-800">
       Contact Administrator
     </a>
   </p>

@@ -193,7 +193,7 @@
                 <i class="fas fa-user-plus w-5"></i>
                 <span>Add Employee</span>
             </a>
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition-all">
+            <a href="#leave-requests" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 text-slate-300 font-medium transition-all">
                 <i class="fas fa-file-export w-5"></i>
                 <span>Export Report</span>
             </a>
@@ -341,7 +341,7 @@
             </div>
 
             <!-- LEAVE REQUESTS TABLE -->
-            <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-lg overflow-hidden">
+            <div id="leave-requests" class="bg-slate-800 border border-slate-700 rounded-2xl shadow-lg overflow-hidden scroll-mt-24">
 
                 <% if (leaveList != null && !leaveList.isEmpty()) { %>
 
