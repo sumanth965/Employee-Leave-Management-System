@@ -58,7 +58,7 @@
   <!-- ===== End Background ===== -->
 
   <!-- ===== Add User Form ===== -->
-  <form action="AddUserServlet" method="post"
+  <form action="RegisterServlet" method="post"
         class="bg-white w-full max-w-md p-12 border border-slate-200 rounded-lg shadow-sm">
 
     <div class="mb-12 text-center">
