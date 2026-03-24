@@ -23,6 +23,7 @@
 </table>
 
 <p><a href="${pageContext.request.contextPath}/app/employee/apply">Apply New Leave</a></p>
+<p><a href="${pageContext.request.contextPath}/app/employee/calendar">View Leave Calendar</a></p>
 
 <h3>Filter Leaves</h3>
 <form method="get" action="${pageContext.request.contextPath}/app/employee/dashboard">

@@ -75,6 +75,43 @@ public class JdbcLeaveDao implements LeaveDao {
     }
 
     @Override
+    public List<LeaveRequest> findByEmployeeInRange(long employeeId, LocalDate fromDate, LocalDate toDate, LeaveStatus status) throws SQLException {
+        StringBuilder sql = new StringBuilder("""
+                SELECT l.*, NULL employee_name, m.full_name approver_name
+                FROM leaves l
+                LEFT JOIN user m ON m.id = l.approved_by
+                WHERE l.employee_id = ?
+                  AND l.start_date <= ?
+                  AND l.end_date >= ?
+                """);
+
+        if (status != null) {
+            sql.append(" AND l.status = ?");
+        } else {
+            sql.append(" AND l.status IN ('APPROVED', 'PENDING', 'REJECTED')");
+        }
+        sql.append(" ORDER BY l.start_date ASC");
+
+        List<LeaveRequest> leaves = new ArrayList<>();
+        try (Connection connection = connectionFactory.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+            int index = 1;
+            statement.setLong(index++, employeeId);
+            statement.setDate(index++, Date.valueOf(toDate));
+            statement.setDate(index++, Date.valueOf(fromDate));
+            if (status != null) {
+                statement.setString(index, status.name());
+            }
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    leaves.add(mapLeave(rs));
+                }
+            }
+        }
+        return leaves;
+    }
+
+    @Override
     public PagedResult<LeaveRequest> findForManager(LeaveStatus status, LocalDate fromDate, LocalDate toDate, int page, int pageSize) throws SQLException {
         List<Object> params = new ArrayList<>();
         String where = buildFilterClause(status, fromDate, toDate, params, "l");

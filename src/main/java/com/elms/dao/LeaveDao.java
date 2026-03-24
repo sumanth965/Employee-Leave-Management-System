@@ -7,12 +7,14 @@ import com.elms.util.PagedResult;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface LeaveDao {
     long create(LeaveRequest request) throws SQLException;
     Optional<LeaveRequest> findById(long leaveId) throws SQLException;
     PagedResult<LeaveRequest> findByEmployee(long employeeId, LeaveStatus status, LocalDate fromDate, LocalDate toDate, int page, int pageSize) throws SQLException;
+    List<LeaveRequest> findByEmployeeInRange(long employeeId, LocalDate fromDate, LocalDate toDate, LeaveStatus status) throws SQLException;
     PagedResult<LeaveRequest> findForManager(LeaveStatus status, LocalDate fromDate, LocalDate toDate, int page, int pageSize) throws SQLException;
     boolean hasOverlappingLeave(long employeeId, LocalDate startDate, LocalDate endDate) throws SQLException;
     boolean updateStatus(long leaveId, LeaveStatus status, Long approvedBy, String comments) throws SQLException;

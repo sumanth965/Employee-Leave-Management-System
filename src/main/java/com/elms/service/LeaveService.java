@@ -75,6 +75,10 @@ public class LeaveService {
         return leaveDao.findByEmployee(employeeId, status, fromDate, toDate, page, pageSize);
     }
 
+    public List<LeaveRequest> getEmployeeLeavesForCalendar(long employeeId, LocalDate fromDate, LocalDate toDate, LeaveStatus status) throws SQLException {
+        return leaveDao.findByEmployeeInRange(employeeId, fromDate, toDate, status);
+    }
+
     public PagedResult<LeaveRequest> getManagerLeaves(LeaveStatus status, LocalDate fromDate, LocalDate toDate, int page, int pageSize) throws SQLException {
         return leaveDao.findForManager(status, fromDate, toDate, page, pageSize);
     }
