@@ -1,6 +1,10 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@ page import="java.util.List" %>
+<%@ page import="model.Leave" %>
+<%
+    String flashSuccess = (String) request.getAttribute("flashSuccess");
+    String flashError = (String) request.getAttribute("flashError");
+    List<Leave> calendarLeaves = (List<Leave>) request.getAttribute("calendarLeaves");
+%>
 <!DOCTYPE html>
 <html>
 <head>
