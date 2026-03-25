@@ -35,7 +35,7 @@ public class CalendarServlet extends BaseServlet {
             req.setAttribute("previousMonth", currentMonth.minusMonths(1).toString());
             req.setAttribute("nextMonth", currentMonth.plusMonths(1).toString());
             req.setAttribute("statusFilter", statusFilter);
-            req.getRequestDispatcher("/WEB-INF/views/employeeCalendar.jsp").forward(req, resp);
+            req.getRequestDispatcher("/Calendar.jsp").forward(req, resp);
         } catch (SQLException e) {
             req.setAttribute("error", "Unable to load calendar right now.");
             req.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(req, resp);
