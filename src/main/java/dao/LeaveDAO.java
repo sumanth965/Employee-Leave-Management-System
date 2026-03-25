@@ -16,7 +16,7 @@ public class LeaveDAO {
     // =====================================
     public static boolean applyLeave(Leave l) {
 
-        String sql = "INSERT INTO leaves (user_id, start_date, end_date, reason, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO leaves (user_id, start_date, end_date, leave_type, reason, status) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -24,8 +24,9 @@ public class LeaveDAO {
             ps.setInt(1, l.getUserId());
             ps.setString(2, l.getStartDate());
             ps.setString(3, l.getEndDate());
-            ps.setString(4, l.getReason());
-            ps.setString(5, "Pending");
+            ps.setString(4, l.getLeaveType() == null || l.getLeaveType().trim().isEmpty() ? "General" : l.getLeaveType());
+            ps.setString(5, l.getReason());
+            ps.setString(6, "Pending");
 
             return ps.executeUpdate() > 0;
 
@@ -233,6 +234,7 @@ public class LeaveDAO {
         l.setUserId(rs.getInt("user_id"));
         l.setStartDate(rs.getString("start_date"));
         l.setEndDate(rs.getString("end_date"));
+        l.setLeaveType(rs.getString("leave_type"));
         l.setReason(rs.getString("reason"));
         l.setStatus(rs.getString("status"));
 

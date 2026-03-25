@@ -47,10 +47,11 @@ public class ApplyLeaveServlet extends HttpServlet {
         leave.setUserId(user.getId());
         leave.setStartDate(req.getParameter("start"));
         leave.setEndDate(req.getParameter("end"));
+        leave.setLeaveType(req.getParameter("leaveType"));
         leave.setReason(req.getParameter("reason"));
 
         LeaveDAO.applyLeave(leave);
 
-        res.sendRedirect(req.getContextPath() + "/employee.jsp");
+        res.sendRedirect(req.getContextPath() + "/employee/leaves");
     }
 }

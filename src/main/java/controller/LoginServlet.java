@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
 
         if ("employee".equals(role)) {
             System.out.println("REDIRECTING TO EMPLOYEE");
-            res.sendRedirect(req.getContextPath() + "/employee.jsp");
+            res.sendRedirect(req.getContextPath() + "/employee/leaves");
         } 
         else if ("manager".equals(role)) {
             System.out.println("REDIRECTING TO MANAGER");
