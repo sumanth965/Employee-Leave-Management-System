@@ -1,5 +1,10 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.Leave" %>
+<%
+    String flashSuccess = (String) request.getAttribute("flashSuccess");
+    String flashError = (String) request.getAttribute("flashError");
+    List<Leave> calendarLeaves = (List<Leave>) request.getAttribute("calendarLeaves");
+%>
 
 <!DOCTYPE html>
 <html>
@@ -15,33 +20,42 @@
     <h2>My Leave Calendar</h2>
 
     <!-- Messages -->
-    <c:if test="${not empty flashSuccess}">
-        <div class="alert alert-success">${flashSuccess}</div>
-    </c:if>
+    <% if (flashSuccess != null && !flashSuccess.trim().isEmpty()) { %>
+        <div class="alert alert-success"><%= flashSuccess %></div>
+    <% } %>
 
-    <c:if test="${not empty flashError}">
-        <div class="alert alert-danger">${flashError}</div>
-    </c:if>
+    <% if (flashError != null && !flashError.trim().isEmpty()) { %>
+        <div class="alert alert-danger"><%= flashError %></div>
+    <% } %>
 
     <!-- Navigation -->
     <div class="mb-3">
-        <a href="${pageContext.request.contextPath}/app/employee/dashboard" class="btn btn-secondary">
+        <a href="<%= request.getContextPath() %>/app/employee/dashboard" class="btn btn-secondary">
             Back
         </a>
     </div>
 
     <!-- Leave Data -->
-    <c:forEach items="${calendarLeaves}" var="leave">
+    <% if (calendarLeaves != null) {
+           for (Leave leave : calendarLeaves) {
+               String status = leave.getStatus() == null ? "Pending" : leave.getStatus();
+    %>
         <div class="card mb-2">
             <div class="card-body">
-                <b>Type:</b> ${leave.leaveType} <br>
-                <b>Status:</b> ${leave.status} <br>
-                <b>From:</b> ${leave.startDate} <br>
-                <b>To:</b> ${leave.endDate} <br>
-                <b>Reason:</b> ${leave.reason}
+                <b>Type:</b> <%= leave.getLeaveType() == null ? "Leave" : leave.getLeaveType() %> <br>
+                <b>Status:</b> <%= status %> <br>
+                <b>From:</b> <%= leave.getStartDate() %> <br>
+                <b>To:</b> <%= leave.getEndDate() %> <br>
+                <b>Reason:</b> <%= leave.getReason() %>
             </div>
         </div>
-    </c:forEach>
+    <%     }
+       }
+    %>
+
+    <% if (calendarLeaves == null || calendarLeaves.isEmpty()) { %>
+        <div class="alert alert-info">No leave records found.</div>
+    <% } %>
 
 </div>
 
