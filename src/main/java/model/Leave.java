@@ -6,6 +6,7 @@ public class Leave {
     private int userId;
     private String startDate;
     private String endDate;
+    private String leaveType;
     private String reason;
     private String status;
 
@@ -39,6 +40,14 @@ public class Leave {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public String getLeaveType() {
+        return leaveType;
+    }
+
+    public void setLeaveType(String leaveType) {
+        this.leaveType = leaveType;
     }
 
     public String getReason() {
