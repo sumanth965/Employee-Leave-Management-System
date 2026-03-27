@@ -31,6 +31,6 @@ public class EmployeeApplyLeavePageServlet extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("/WEB-INF/views/apply-leave.jsp").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/employee/leaves");
     }
 }

@@ -9,6 +9,8 @@ public class Leave {
     private String leaveType;
     private String reason;
     private String status;
+    private int days;
+    private String managerComments;
 
     public int getId() {
         return id;
@@ -64,5 +66,21 @@ public class Leave {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getDays() {
+        return days;
+    }
+
+    public void setDays(int days) {
+        this.days = days;
+    }
+
+    public String getManagerComments() {
+        return managerComments;
+    }
+
+    public void setManagerComments(String managerComments) {
+        this.managerComments = managerComments;
     }
 }

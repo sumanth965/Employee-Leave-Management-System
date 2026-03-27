@@ -3,6 +3,9 @@ package com.elms.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +14,6 @@ import com.elms.util.DBConnection;
 
 public class LeaveDAO {
 
-    // =====================================
-    // 1️⃣ Apply Leave
-    // =====================================
     public static boolean applyLeave(Leave l) {
 
         String sql = "INSERT INTO leaves (user_id, start_date, end_date, leave_type, reason, status) VALUES (?, ?, ?, ?, ?, ?)";
@@ -24,7 +24,7 @@ public class LeaveDAO {
             ps.setInt(1, l.getUserId());
             ps.setString(2, l.getStartDate());
             ps.setString(3, l.getEndDate());
-            ps.setString(4, l.getLeaveType() == null || l.getLeaveType().trim().isEmpty() ? "General" : l.getLeaveType());
+            ps.setString(4, l.getLeaveType());
             ps.setString(5, l.getReason());
             ps.setString(6, "Pending");
 
@@ -36,9 +36,6 @@ public class LeaveDAO {
         }
     }
 
-    // =====================================
-    // 2️⃣ Filtered Pagination
-    // =====================================
     public static List<Leave> getLeavesPaginated(int page, int limit, String search, String statusFilter) {
 
         List<Leave> list = new ArrayList<>();
@@ -85,9 +82,6 @@ public class LeaveDAO {
         return list;
     }
 
-    // =====================================
-    // 3️⃣ Get Total Records (Filtered)
-    // =====================================
     public static int getTotalLeaves(String search, String statusFilter) {
 
         int count = 0;
@@ -127,9 +121,6 @@ public class LeaveDAO {
         return count;
     }
 
-    // =====================================
-    // 4️⃣ Count By Status
-    // =====================================
     public static int countByStatus(String status) {
 
         int count = 0;
@@ -153,9 +144,6 @@ public class LeaveDAO {
         return count;
     }
 
-    // =====================================
-    // 5️⃣ Update Leave Status
-    // =====================================
     public static boolean updateStatus(int id, String status) {
 
         String sql = "UPDATE leaves SET status = ? WHERE id = ?";
@@ -174,9 +162,6 @@ public class LeaveDAO {
         }
     }
 
-    // =====================================
-    // 6️⃣ Get All Leaves
-    // =====================================
     public static List<Leave> getAllLeaves() {
 
         List<Leave> list = new ArrayList<>();
@@ -197,18 +182,26 @@ public class LeaveDAO {
         return list;
     }
 
-    // =====================================
-    // 7️⃣ Get Leaves By User
-    // =====================================
     public static List<Leave> getLeavesByUser(int userId) {
+        return getLeavesByUserAndStatus(userId, "All");
+    }
 
+    public static List<Leave> getLeavesByUserAndStatus(int userId, String statusFilter) {
         List<Leave> list = new ArrayList<>();
-        String sql = "SELECT * FROM leaves WHERE user_id = ? ORDER BY id DESC";
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM leaves WHERE user_id = ? ");
+        if (statusFilter != null && !"All".equalsIgnoreCase(statusFilter)) {
+            sql.append("AND status = ? ");
+        }
+        sql.append("ORDER BY start_date DESC, id DESC");
 
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
 
             ps.setInt(1, userId);
+            if (statusFilter != null && !"All".equalsIgnoreCase(statusFilter)) {
+                ps.setString(2, statusFilter);
+            }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -223,10 +216,72 @@ public class LeaveDAO {
         return list;
     }
 
-    // =====================================
-    // 🔹 Extract Utility
-    // =====================================
-    private static Leave extractLeave(ResultSet rs) throws Exception {
+    public static int getUsedLeaveDaysByType(int userId, String leaveType) {
+        String sql = "SELECT COALESCE(SUM(DATEDIFF(end_date, start_date) + 1), 0) AS used_days "
+                + "FROM leaves WHERE user_id = ? AND leave_type = ? AND status = 'Approved'";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setString(2, leaveType);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("used_days");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static boolean hasOverlappingLeave(int userId, String startDate, String endDate) {
+        String sql = "SELECT COUNT(*) FROM leaves "
+                + "WHERE user_id = ? AND status IN ('Pending','Approved') "
+                + "AND NOT (end_date < ? OR start_date > ?)";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setString(2, startDate);
+            ps.setString(3, endDate);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean cancelPendingLeave(int userId, int leaveId) {
+        String sql = "UPDATE leaves SET status = 'Cancelled' WHERE id = ? AND user_id = ? AND status = 'Pending'";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, leaveId);
+            ps.setInt(2, userId);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static Leave extractLeave(ResultSet rs) throws SQLException {
 
         Leave l = new Leave();
 
@@ -237,6 +292,27 @@ public class LeaveDAO {
         l.setLeaveType(rs.getString("leave_type"));
         l.setReason(rs.getString("reason"));
         l.setStatus(rs.getString("status"));
+        try {
+            l.setDays(rs.getInt("days"));
+        } catch (SQLException ignore) {
+            l.setDays(0);
+        }
+
+        try {
+            l.setManagerComments(rs.getString("manager_comments"));
+        } catch (SQLException ignore) {
+            l.setManagerComments(null);
+        }
+
+        if (l.getDays() <= 0 && l.getStartDate() != null && l.getEndDate() != null) {
+            try {
+                LocalDate startDate = LocalDate.parse(l.getStartDate());
+                LocalDate endDate = LocalDate.parse(l.getEndDate());
+                l.setDays((int) Math.max(1, ChronoUnit.DAYS.between(startDate, endDate) + 1));
+            } catch (Exception ignore) {
+                l.setDays(1);
+            }
+        }
 
         return l;
     }
