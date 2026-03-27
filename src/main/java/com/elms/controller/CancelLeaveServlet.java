@@ -13,8 +13,8 @@ import com.elms.model.User;
 import com.elms.service.EmployeeLeaveService;
 import com.elms.service.LeaveApplicationResult;
 
-@WebServlet({"/ApplyLeaveServlet", "/employee/leaves/apply"})
-public class ApplyLeaveServlet extends HttpServlet {
+@WebServlet("/employee/leaves/cancel")
+public class CancelLeaveServlet extends HttpServlet {
 
     private final EmployeeLeaveService leaveService = new EmployeeLeaveService();
 
@@ -23,32 +23,29 @@ public class ApplyLeaveServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = req.getSession(false);
+        User currentUser = session == null ? null : (User) session.getAttribute("user");
 
-        if (session == null) {
+        if (currentUser == null) {
             res.sendRedirect(req.getContextPath() + "/login.jsp");
             return;
         }
 
-        User user = (User) session.getAttribute("user");
-
-        if (user == null) {
-            res.sendRedirect(req.getContextPath() + "/login.jsp");
-            return;
-        }
-
-        if (!"employee".equalsIgnoreCase(user.getRole())) {
+        if (!"employee".equalsIgnoreCase(currentUser.getRole())) {
             res.sendRedirect(req.getContextPath() + "/manager.jsp");
             return;
         }
 
-        LeaveApplicationResult result = leaveService.applyLeave(
-                user.getId(),
-                req.getParameter("leaveType"),
-                req.getParameter("start"),
-                req.getParameter("end"),
-                req.getParameter("reason")
-        );
+        int leaveId;
+        try {
+            leaveId = Integer.parseInt(req.getParameter("leaveId"));
+        } catch (Exception ex) {
+            session.setAttribute("flashType", "danger");
+            session.setAttribute("flashMessage", "Invalid leave request selected for cancellation.");
+            res.sendRedirect(req.getContextPath() + "/employee/leaves");
+            return;
+        }
 
+        LeaveApplicationResult result = leaveService.cancelPendingLeave(currentUser.getId(), leaveId);
         session.setAttribute("flashType", result.isSuccess() ? "success" : "danger");
         session.setAttribute("flashMessage", result.getMessage());
 
