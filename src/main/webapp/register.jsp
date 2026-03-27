@@ -1,4 +1,4 @@
-<%@ page import="model.User" %>
+<%@ page import="com.elms.model.User" %>
 
 <%
     // 🔐 Session + Role Validation

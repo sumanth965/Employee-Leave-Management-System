@@ -1,4 +1,4 @@
-package model;
+package com.elms.model;
 
 public class Leave {
 

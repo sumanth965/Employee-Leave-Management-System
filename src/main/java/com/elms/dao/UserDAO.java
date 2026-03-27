@@ -1,11 +1,11 @@
-package dao;
+package com.elms.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import model.User;
-import util.DBConnection;
+import com.elms.model.User;
+import com.elms.util.DBConnection;
 
 public class UserDAO {
 	public static boolean register(User user, String password) {

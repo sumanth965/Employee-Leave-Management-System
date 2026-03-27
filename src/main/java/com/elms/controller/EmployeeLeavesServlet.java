@@ -1,4 +1,4 @@
-package controller;
+package com.elms.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.LeaveDAO;
-import model.Leave;
-import model.User;
+import com.elms.dao.LeaveDAO;
+import com.elms.model.Leave;
+import com.elms.model.User;
 
 @WebServlet("/employee/leaves")
 public class EmployeeLeavesServlet extends HttpServlet {

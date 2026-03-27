@@ -1,12 +1,12 @@
-package controller;
+package com.elms.controller;
 
 import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
-import dao.UserDAO;
-import model.User;
+import com.elms.dao.UserDAO;
+import com.elms.model.User;
 
 @WebServlet("/RegisterServlet")
 public class RegisterServlet extends HttpServlet {

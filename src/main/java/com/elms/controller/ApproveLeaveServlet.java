@@ -1,4 +1,4 @@
-package controller;
+package com.elms.controller;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.LeaveDAO;
-import model.User;
+import com.elms.dao.LeaveDAO;
+import com.elms.model.User;
 
 @WebServlet("/ApproveLeaveServlet")
 public class ApproveLeaveServlet extends HttpServlet {

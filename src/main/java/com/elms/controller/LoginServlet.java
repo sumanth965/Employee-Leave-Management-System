@@ -1,4 +1,4 @@
-package controller;
+package com.elms.controller;
 
 import java.io.IOException;
 
@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.UserDAO;
-import model.User;
+import com.elms.dao.UserDAO;
+import com.elms.model.User;
 
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {

@@ -1,7 +1,7 @@
 <%@ page import="java.util.List" %>
-<%@ page import="model.Leave" %>
-<%@ page import="model.User" %>
-<%@ page import="dao.LeaveDAO" %>
+<%@ page import="com.elms.model.Leave" %>
+<%@ page import="com.elms.model.User" %>
+<%@ page import="com.elms.dao.LeaveDAO" %>
 
 <%
     // ================= SESSION + ROLE VALIDATION =================
