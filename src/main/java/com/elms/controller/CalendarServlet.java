@@ -14,6 +14,9 @@ import com.elms.model.Leave;
 import com.elms.model.User;
 import com.elms.service.EmployeeLeaveService;
 
+import com.elms.util.CalendarViewBuilder;
+import java.util.Map;
+
 @WebServlet("/employee/calendar")
 public class CalendarServlet extends HttpServlet {
 
@@ -36,10 +39,15 @@ public class CalendarServlet extends HttpServlet {
             return;
         }
 
-        // Fetch all leaves to display on the calendar (Approved, Pending, Refused)
+        String monthParam = request.getParameter("month");
         List<Leave> leaves = leaveService.getLeaveHistory(currentUser.getId(), "All");
         
-        request.setAttribute("calendarLeaves", leaves);
+        // Use the strategy pattern/utility to build the view model
+        Map<String, Object> calendarData = CalendarViewBuilder.buildMonthView(monthParam, leaves);
+        
+        for (Map.Entry<String, Object> entry : calendarData.entrySet()) {
+            request.setAttribute(entry.getKey(), entry.getValue());
+        }
 
         request.getRequestDispatcher("/WEB-INF/views/calendar.jsp").forward(request, response);
     }

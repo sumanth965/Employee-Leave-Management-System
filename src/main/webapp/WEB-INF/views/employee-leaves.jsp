@@ -165,6 +165,7 @@
     <nav class="nav flex-column mt-4 gap-1">
         <a class="nav-link active" href="${pageContext.request.contextPath}/employee/leaves"><i class="bi bi-house-door me-2"></i>Dashboard Home</a>
         <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="offcanvas" data-bs-target="#applyLeaveDrawer"><i class="bi bi-calendar-plus me-2"></i>Apply Leave</button>
+        <a class="nav-link" href="${pageContext.request.contextPath}/employee/calendar"><i class="bi bi-calendar3 me-2"></i>Leave Calendar</a>
         <a class="nav-link" href="${pageContext.request.contextPath}/employee/leaves"><i class="bi bi-clock-history me-2"></i>My Leave History</a>
         <a class="nav-link" href="#"><i class="bi bi-person me-2"></i>Profile</a>
     </nav>
