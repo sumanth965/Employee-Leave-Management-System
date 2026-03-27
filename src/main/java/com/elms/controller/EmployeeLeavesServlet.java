@@ -14,7 +14,7 @@ import com.elms.dao.LeaveDAO;
 import com.elms.model.Leave;
 import com.elms.model.User;
 
-@WebServlet("/employee/leaves")
+@WebServlet({"/employee/leaves", "/employee", "/employee/"})
 public class EmployeeLeavesServlet extends HttpServlet {
 
     @Override
