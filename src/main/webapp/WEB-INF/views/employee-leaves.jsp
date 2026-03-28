@@ -317,6 +317,46 @@
                         </c:forEach>
                     </div>
 
+                    <div class="glass-card p-3 p-md-4 mb-4 fade-in">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="bi bi-people-fill text-primary fs-5"></i>
+                            <h3 class="mb-0" style="font-size:20px;">Who's On Leave Today</h3>
+                            <span class="badge bg-primary ms-auto">${fn:length(onLeaveTodayList)} away</span>
+                        </div>
+                        <c:choose>
+                            <c:when test="${empty onLeaveTodayList}">
+                                <div class="alert alert-light border text-muted mb-0">
+                                    <i class="bi bi-check-circle text-success me-1"></i>
+                                    All team members are present today!
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="row g-2">
+                                    <c:forEach var="emp" items="${onLeaveTodayList}">
+                                        <div class="col-12 col-md-6 col-xl-4">
+                                            <div class="d-flex align-items-center gap-3 p-2 rounded-3 border bg-white">
+                                                <img src="https://ui-avatars.com/api/?name=${emp.employeeName}&background=2563EB&color=fff"
+                                                    class="rounded-circle" width="42" height="42" alt="avatar">
+                                                <div>
+                                                    <div class="fw-semibold" style="font-size:13px;">${emp.employeeName}</div>
+                                                    <c:if test="${not empty emp.department}">
+                                                        <div class="text-muted" style="font-size:11px;">${emp.department}
+                                                        </div>
+                                                    </c:if>
+                                                    <span class="badge text-bg-warning mt-1"
+                                                        style="font-size:10px;">${emp.leaveType}</span>
+                                                </div>
+                                                <div class="ms-auto text-end" style="font-size:11px; color:#64748b;">
+                                                    <div>${emp.startDate}</div>
+                                                    <div>→ ${emp.endDate}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+                    </div>
 
                     <div class="glass-card p-3 p-md-4 fade-in">
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">

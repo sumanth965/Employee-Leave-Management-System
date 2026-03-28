@@ -11,6 +11,7 @@ import com.elms.dao.LeaveDAO;
 import com.elms.model.Leave;
 import com.elms.model.LeaveRequest;
 import com.elms.model.LeaveBalance;
+import com.elms.model.OnLeaveToday;
 
 public class EmployeeLeaveService {
 
@@ -40,6 +41,12 @@ public class EmployeeLeaveService {
                 })
                 .toList();
     }
+
+    public List<OnLeaveToday> getWhoIsOnLeaveToday(int employeeId) {
+        List<OnLeaveToday> onLeaveTodayList = LeaveDAO.getEmployeesOnLeaveToday(employeeId);
+        return onLeaveTodayList == null ? List.of() : onLeaveTodayList;
+    }
+
 
     public LeaveApplicationResult applyLeave(int userId, String leaveType, String startDateRaw, String endDateRaw, String reason) {
         if (isBlank(leaveType) || isBlank(startDateRaw) || isBlank(endDateRaw) || isBlank(reason)) {

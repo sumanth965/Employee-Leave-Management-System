@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import com.elms.model.Leave;
 import com.elms.model.LeaveBalance;
 import com.elms.model.LeaveRequest;
+import com.elms.model.OnLeaveToday;
 import com.elms.model.User;
 import com.elms.service.EmployeeLeaveService;
 
@@ -46,8 +47,10 @@ public class EmployeeLeavesServlet extends HttpServlet {
         List<Leave> leaves = leaveService.getLeaveHistory(currentUser.getId(), statusFilter);
         List<LeaveBalance> leaveBalances = leaveService.getLeaveBalances(currentUser.getId());
         List<LeaveRequest> recentLeaveRequests = leaveService.getRecentLeaveRequests(currentUser.getId());
+        List<OnLeaveToday> onLeaveTodayList = leaveService.getWhoIsOnLeaveToday(currentUser.getId());
 
         request.setAttribute("leaves", leaves);
+        request.setAttribute("onLeaveTodayList", onLeaveTodayList);
         request.setAttribute("recentLeaveRequests", recentLeaveRequests);
         request.setAttribute("leaveBalances", leaveBalances);
         request.setAttribute("balances", leaveBalances);
