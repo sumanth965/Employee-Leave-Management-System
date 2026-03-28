@@ -13,14 +13,25 @@ import com.elms.model.User;
 import com.elms.service.EmployeeLeaveService;
 import com.elms.service.LeaveApplicationResult;
 
-@WebServlet("/employee/leaves/cancel")
+@WebServlet({"/employee/leaves/cancel", "/employee/cancelLeave"})
 public class CancelLeaveServlet extends HttpServlet {
 
     private final EmployeeLeaveService leaveService = new EmployeeLeaveService();
 
     @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        processCancel(req, res, "id");
+    }
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
+        processCancel(req, res, "leaveId");
+    }
+
+    private void processCancel(HttpServletRequest req, HttpServletResponse res, String paramName)
+            throws IOException {
 
         HttpSession session = req.getSession(false);
         User currentUser = session == null ? null : (User) session.getAttribute("user");
@@ -37,7 +48,7 @@ public class CancelLeaveServlet extends HttpServlet {
 
         int leaveId;
         try {
-            leaveId = Integer.parseInt(req.getParameter("leaveId"));
+            leaveId = Integer.parseInt(req.getParameter(paramName));
         } catch (Exception ex) {
             session.setAttribute("flashType", "danger");
             session.setAttribute("flashMessage", "Invalid leave request selected for cancellation.");
