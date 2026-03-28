@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,6 +121,17 @@
 
         .table tbody tr:nth-child(odd) { background-color: #f8fafc; }
         .table tbody tr:hover { background-color: #eaf2ff; transition: .2s ease; }
+
+
+        .tracker-table th,
+        .tracker-table td {
+            white-space: nowrap;
+        }
+
+        .tracker-table td.actions-col,
+        .tracker-table th.actions-col {
+            min-width: 110px;
+        }
 
         .status-badge {
             border-radius: 999px;
@@ -252,6 +264,67 @@
             </c:forEach>
         </div>
 
+
+        <div class="glass-card p-3 p-md-4 mb-4 fade-in">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <h3 class="mb-0" style="font-size:24px;">My Leave Requests</h3>
+                <small class="text-muted">Recent requests and current status</small>
+            </div>
+
+            <c:if test="${empty recentLeaveRequests}">
+                <div class="alert alert-light border text-muted mb-0">No requests found.</div>
+            </c:if>
+
+            <c:if test="${not empty recentLeaveRequests}">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 tracker-table">
+                        <thead>
+                        <tr>
+                            <th>Leave Type</th>
+                            <th>From Date → To Date</th>
+                            <th>Number of Days</th>
+                            <th>Status</th>
+                            <th class="text-end actions-col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="req" items="${recentLeaveRequests}">
+                            <c:set var="normalizedStatus" value="${fn:toUpperCase(req.status)}" />
+                            <tr>
+                                <td>${req.leaveType}</td>
+                                <td>${req.fromDate} → ${req.toDate}</td>
+                                <td>${req.noOfDays}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${normalizedStatus eq 'APPROVED'}">
+                                            <span class="status-badge status-approved">🟢 Approved</span>
+                                        </c:when>
+                                        <c:when test="${normalizedStatus eq 'REJECTED'}">
+                                            <span class="status-badge status-rejected">🔴 Rejected</span>
+                                        </c:when>
+                                        <c:when test="${normalizedStatus eq 'CANCELLED'}">
+                                            <span class="status-badge status-cancelled">Cancelled</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="status-badge status-pending">🟡 Pending</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td class="text-end actions-col">
+                                    <c:if test="${normalizedStatus eq 'PENDING'}">
+                                        <a class="btn btn-sm btn-outline-danger"
+                                           href="${pageContext.request.contextPath}/employee/cancelLeave?id=${req.id}"
+                                           onclick="return confirm('Are you sure you want to cancel this pending leave request?');">Cancel</a>
+                                    </c:if>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </c:if>
+        </div>
+
         <div class="glass-card p-3 p-md-4 fade-in">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
                 <h3 class="mb-0" style="font-size:24px;">Leave History</h3>
@@ -290,11 +363,12 @@
                                     <td>${leave.days}</td>
                                     <td>${leave.reason}</td>
                                     <td>
-                                        <span class="status-badge ${leave.status eq 'Approved' ? 'status-approved' : (leave.status eq 'Rejected' ? 'status-rejected' : (leave.status eq 'Cancelled' ? 'status-cancelled' : 'status-pending'))}">${leave.status}</span>
+                                        <c:set var="leaveStatusUpper" value="${fn:toUpperCase(leave.status)}" />
+                                        <span class="status-badge ${leaveStatusUpper eq 'APPROVED' ? 'status-approved' : (leaveStatusUpper eq 'REJECTED' ? 'status-rejected' : (leaveStatusUpper eq 'CANCELLED' ? 'status-cancelled' : 'status-pending'))}">${leave.status}</span>
                                     </td>
                                     <td>${empty leave.managerComments ? '-' : leave.managerComments}</td>
                                     <td class="text-end">
-                                        <c:if test="${leave.status eq 'Pending'}">
+                                        <c:if test="${fn:toUpperCase(leave.status) eq 'PENDING'}">
                                             <form method="post" action="${pageContext.request.contextPath}/employee/leaves/cancel" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this pending leave request?');">
                                                 <input type="hidden" name="leaveId" value="${leave.id}">
                                                 <button class="btn btn-sm btn-outline-danger" type="submit">Cancel</button>

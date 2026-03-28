@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.elms.dao.LeaveDAO;
 import com.elms.model.Leave;
+import com.elms.model.LeaveRequest;
 import com.elms.model.LeaveBalance;
 
 public class EmployeeLeaveService {
@@ -23,6 +24,10 @@ public class EmployeeLeaveService {
 
     public List<Leave> getLeaveHistory(int userId, String statusFilter) {
         return LeaveDAO.getLeavesByUserAndStatus(userId, statusFilter);
+    }
+
+    public List<LeaveRequest> getRecentLeaveRequests(int userId) {
+        return LeaveDAO.getRecentLeaveRequests(userId);
     }
 
     public List<LeaveBalance> getLeaveBalances(int userId) {
@@ -93,6 +98,14 @@ public class EmployeeLeaveService {
         }
 
         return new LeaveApplicationResult(true, "Leave request submitted successfully.");
+    }
+
+    public LeaveApplicationResult cancelPendingLeaveRequest(int leaveId) {
+        boolean cancelled = LeaveDAO.cancelLeave(leaveId);
+        if (!cancelled) {
+            return new LeaveApplicationResult(false, "Only pending leave requests can be cancelled.");
+        }
+        return new LeaveApplicationResult(true, "Leave request cancelled successfully.");
     }
 
     public LeaveApplicationResult cancelPendingLeave(int userId, int leaveId) {
