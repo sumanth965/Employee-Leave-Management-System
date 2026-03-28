@@ -257,7 +257,15 @@
             <div class="main-wrap">
                 <header class="topbar d-flex justify-content-between align-items-center">
                     <div>
-                        <h2 class="mb-0" style="font-size:24px;">Good Morning, ${sessionScope.user.username}</h2>
+                        <h2 class="mb-0" style="font-size:24px;"><span id="greetingText"></span>,
+                            ${sessionScope.user.username}</h2>
+                        <script>
+                            (function () {
+                                var h = new Date().getHours();
+                                var g = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+                                document.getElementById('greetingText').textContent = g;
+                            })();
+                        </script>
                         <small class="text-secondary">Welcome back to your leave dashboard</small>
                     </div>
                     <div class="d-flex align-items-center gap-3">
@@ -338,9 +346,11 @@
                                                 <img src="https://ui-avatars.com/api/?name=${emp.employeeName}&background=2563EB&color=fff"
                                                     class="rounded-circle" width="42" height="42" alt="avatar">
                                                 <div>
-                                                    <div class="fw-semibold" style="font-size:13px;">${emp.employeeName}</div>
+                                                    <div class="fw-semibold" style="font-size:13px;">${emp.employeeName}
+                                                    </div>
                                                     <c:if test="${not empty emp.department}">
-                                                        <div class="text-muted" style="font-size:11px;">${emp.department}
+                                                        <div class="text-muted" style="font-size:11px;">
+                                                            ${emp.department}
                                                         </div>
                                                     </c:if>
                                                     <span class="badge text-bg-warning mt-1"
