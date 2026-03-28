@@ -27,8 +27,12 @@ public class EmployeeLeaveService {
 
     public List<LeaveBalance> getLeaveBalances(int userId) {
         return ALLOCATED_LEAVES.entrySet().stream()
-                .map(entry -> new LeaveBalance(entry.getKey(), entry.getValue(),
-                        LeaveDAO.getUsedLeaveDaysByType(userId, entry.getKey())))
+                .map(entry -> {
+                    int configuredTotal = LeaveDAO.getAllocatedLeaveDaysByType(userId, entry.getKey());
+                    int totalDays = configuredTotal >= 0 ? configuredTotal : entry.getValue();
+                    int usedDays = LeaveDAO.getUsedLeaveDaysByType(userId, entry.getKey());
+                    return new LeaveBalance(entry.getKey(), totalDays, usedDays);
+                })
                 .toList();
     }
 

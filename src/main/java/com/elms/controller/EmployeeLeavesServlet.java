@@ -43,10 +43,11 @@ public class EmployeeLeavesServlet extends HttpServlet {
         }
 
         List<Leave> leaves = leaveService.getLeaveHistory(currentUser.getId(), statusFilter);
-        List<LeaveBalance> balances = leaveService.getLeaveBalances(currentUser.getId());
+        List<LeaveBalance> leaveBalances = leaveService.getLeaveBalances(currentUser.getId());
 
         request.setAttribute("leaves", leaves);
-        request.setAttribute("balances", balances);
+        request.setAttribute("leaveBalances", leaveBalances);
+        request.setAttribute("balances", leaveBalances);
         request.setAttribute("statusFilter", statusFilter);
         request.setAttribute("statusOptions", leaveService.getSupportedStatuses());
 

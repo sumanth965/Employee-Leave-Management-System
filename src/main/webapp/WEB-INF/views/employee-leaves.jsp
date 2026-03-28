@@ -74,25 +74,37 @@
             animation: fadeSlide .55s ease both;
         }
 
-        .progress-ring {
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            background: conic-gradient(var(--ring-color) calc(var(--percent) * 1%), #e5e7eb 0);
+        .leave-balance-card .metric-label {
+            font-size: 12px;
+            color: #64748b;
         }
 
-        .progress-ring span {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: #fff;
-            display: grid;
-            place-items: center;
+        .leave-balance-card .metric-value {
+            font-weight: 600;
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        .leave-progress-track {
+            background: #e2e8f0;
+            height: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .leave-progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            transition: width .25s ease;
+        }
+
+        .leave-progress-bar.healthy { background: #22c55e; }
+        .leave-progress-bar.warning { background: #f59e0b; }
+        .leave-progress-bar.danger { background: #ef4444; }
+
+        .leave-progress-caption {
             font-size: 12px;
-            font-weight: 700;
-            color: #334155;
+            color: #64748b;
         }
 
         .table thead th {
@@ -207,19 +219,33 @@
         </c:if>
 
         <div class="row g-3 mb-4 fade-in">
-            <c:forEach var="balance" items="${balances}">
+            <c:forEach var="balance" items="${leaveBalances}">
                 <div class="col-12 col-md-6 col-xl-4">
-                    <div class="glass-card p-3 h-100">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h3 class="h6 mb-1">${balance.type}</h3>
-                                <p class="mb-0" style="font-size:16px;">Remaining: <strong>${balance.remaining}</strong> / ${balance.allocated}</p>
-                                <small class="text-muted">Used ${balance.used} day(s)</small>
+                    <div class="glass-card p-3 h-100 leave-balance-card">
+                        <h3 class="h6 mb-3">${balance.leaveType}</h3>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <div class="metric-label">Total</div>
+                                <div class="metric-value">${balance.totalDays}</div>
                             </div>
-                            <div class="progress-ring"
-                                 style="--percent:${balance.usedPercent};--ring-color:${balance.type eq 'Paid Leave' ? '#22C55E' : (balance.type eq 'Casual Leave' ? '#2563EB' : '#F97316')}" >
-                                <span>${balance.usedPercent}%</span>
+                            <div class="col-4">
+                                <div class="metric-label">Used</div>
+                                <div class="metric-value">${balance.usedDays}</div>
                             </div>
+                            <div class="col-4">
+                                <div class="metric-label">Remaining</div>
+                                <div class="metric-value">${balance.remainingDays}</div>
+                            </div>
+                        </div>
+
+                        <div class="leave-progress-track">
+                            <c:set var="usedWidth" value="${balance.totalDays > 0 ? balance.usedPercent : 0}" />
+                            <div class="leave-progress-bar ${balance.usageStatusClass}" style="width:${usedWidth}%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2 leave-progress-caption">
+                            <span>Used: ${usedWidth}%</span>
+                            <span>Remaining: ${balance.remainingPercent}%</span>
                         </div>
                     </div>
                 </div>

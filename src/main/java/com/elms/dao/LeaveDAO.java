@@ -239,6 +239,28 @@ public class LeaveDAO {
         return 0;
     }
 
+    public static int getAllocatedLeaveDaysByType(int userId, String leaveType) {
+        String sql = "SELECT total_leaves FROM leave_balance WHERE user_id = ? AND leave_type = ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setString(2, leaveType);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Math.max(0, rs.getInt("total_leaves"));
+                }
+            }
+
+        } catch (Exception e) {
+            // Leave-balance table may not be configured yet; callers should fallback to default policy.
+        }
+
+        return -1;
+    }
+
     public static boolean hasOverlappingLeave(int userId, String startDate, String endDate) {
         String sql = "SELECT COUNT(*) FROM leaves "
                 + "WHERE user_id = ? AND status IN ('Pending','Approved') "
