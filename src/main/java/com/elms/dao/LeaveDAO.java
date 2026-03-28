@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.elms.model.Leave;
 import com.elms.model.LeaveRequest;
+import com.elms.model.OnLeaveToday;
 import com.elms.util.DBConnection;
 
 public class LeaveDAO {
@@ -363,6 +364,53 @@ public class LeaveDAO {
     }
 
 
+    public static List<OnLeaveToday> getEmployeesOnLeaveToday(int loggedInEmployeeId) {
+        List<OnLeaveToday> employeesOnLeave = new ArrayList<>();
+
+        String promptSchemaSql = "SELECT e.name AS employee_name, e.department AS department, lr.leave_type, "
+                + "lr.start_date, lr.end_date "
+                + "FROM leave_requests lr "
+                + "JOIN employees e ON lr.employee_id = e.id "
+                + "WHERE UPPER(lr.status) = 'APPROVED' "
+                + "AND CURDATE() BETWEEN lr.start_date AND lr.end_date "
+                + "AND lr.employee_id <> ? "
+                + "ORDER BY e.name ASC";
+
+        String legacySchemaSql = "SELECT u.username AS employee_name, NULL AS department, l.leave_type, "
+                + "l.start_date, l.end_date "
+                + "FROM leaves l "
+                + "JOIN users u ON l.user_id = u.id "
+                + "WHERE UPPER(l.status) = 'APPROVED' "
+                + "AND CURDATE() BETWEEN l.start_date AND l.end_date "
+                + "AND l.user_id <> ? "
+                + "ORDER BY u.username ASC";
+
+        try (Connection con = DBConnection.getConnection()) {
+            try (PreparedStatement ps = con.prepareStatement(promptSchemaSql)) {
+                ps.setInt(1, loggedInEmployeeId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        employeesOnLeave.add(extractOnLeaveToday(rs));
+                    }
+                }
+            } catch (SQLException promptSchemaError) {
+                try (PreparedStatement ps = con.prepareStatement(legacySchemaSql)) {
+                    ps.setInt(1, loggedInEmployeeId);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            employeesOnLeave.add(extractOnLeaveToday(rs));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return employeesOnLeave;
+    }
+
+
     private static LeaveRequest extractLeaveRequest(ResultSet rs) throws SQLException {
         LeaveRequest request = new LeaveRequest();
         request.setId(rs.getInt("id"));
@@ -381,6 +429,17 @@ public class LeaveDAO {
         request.setAppliedOn(rs.getString("applied_on"));
         return request;
     }
+
+    private static OnLeaveToday extractOnLeaveToday(ResultSet rs) throws SQLException {
+        OnLeaveToday onLeaveToday = new OnLeaveToday();
+        onLeaveToday.setEmployeeName(rs.getString("employee_name"));
+        onLeaveToday.setDepartment(rs.getString("department"));
+        onLeaveToday.setLeaveType(rs.getString("leave_type"));
+        onLeaveToday.setStartDate(rs.getString("start_date"));
+        onLeaveToday.setEndDate(rs.getString("end_date"));
+        return onLeaveToday;
+    }
+
 
     private static Leave extractLeave(ResultSet rs) throws SQLException {
 
