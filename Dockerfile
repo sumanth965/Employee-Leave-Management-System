@@ -12,13 +12,12 @@ WORKDIR /app
 # Assuming the WAR name matches what's in your pom.xml (usually artifactId.war)
 COPY --from=build /app/target/elms.war /app/elms.war
 
-# Download Jetty Runner to run the WAR file (Jetty 9.4.x compatible with Servlet 4.0)
+# Download WebApp Runner to run the WAR file
 RUN apt-get update && apt-get install -y curl && \
-    curl -L https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-runner/9.4.53.v20231009/jetty-runner-9.4.53.v20231009.jar -o jetty-runner.jar
+    curl -L https://repo1.maven.org/maven2/com/github/jsimone/webapp-runner/9.0.83.0/webapp-runner-9.0.83.0.jar -o webapp-runner.jar
 
 # Render provides a $PORT environment variable
 EXPOSE 8080
 
-# Start Jetty Runner
-# We listen on 0.0.0.0 because Render requires it for networking
-CMD java -jar jetty-runner.jar --port $PORT --host 0.0.0.0 /app/elms.war
+# Start WebApp Runner
+CMD java -jar webapp-runner.jar --port $PORT /app/elms.war
