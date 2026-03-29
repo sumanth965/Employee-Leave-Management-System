@@ -63,18 +63,24 @@ public class DBConnection {
         dbUrl = normalizeMySqlJdbcUrl(dbUrl);
 
         try {
-            System.out.println("LOADING MYSQL DRIVER...");
+            System.out.println("----------------------------------------");
+            System.out.println("Attempting to Connect to Database...");
+            System.out.println("URL: " + dbUrl);
+            System.out.println("User: " + user);
+            
             Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("DRIVER LOADED");
-
-            System.out.println("CONNECTING TO DATABASE...");
             Connection con = DriverManager.getConnection(dbUrl, user, password);
 
-            System.out.println("DATABASE CONNECTED SUCCESSFULLY");
+            if (con != null) {
+                System.out.println("✅ DATABASE CONNECTED SUCCESSFULLY!");
+                System.out.println("----------------------------------------");
+            }
             return con;
 
         } catch (Exception e) {
-            System.out.println("DATABASE CONNECTION FAILED: " + e.getMessage());
+            System.out.println("❌ DATABASE CONNECTION FAILED!");
+            System.out.println("Error: " + e.getMessage());
+            System.out.println("----------------------------------------");
             e.printStackTrace();
             return null;
         }

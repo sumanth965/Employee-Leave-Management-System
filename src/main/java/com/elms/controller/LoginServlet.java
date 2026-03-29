@@ -28,7 +28,7 @@ public class LoginServlet extends HttpServlet {
         User user = UserDAO.validate(username, password);
 
         if (user == null) {
-            System.out.println("USER IS NULL");
+            System.out.println("❌ LOGIN FAILED: No user found with provided username and password.");
             res.sendRedirect(req.getContextPath() + "/login.jsp");
             return;
         }
@@ -37,8 +37,9 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = req.getSession();
         session.setAttribute("user", user);
 
-        System.out.println("USER FOUND");
-        System.out.println("ROLE FROM DB = [" + user.getRole() + "]");
+        System.out.println("✅ LOGIN SUCCESS: User found!");
+        System.out.println("DEBUG: Username from DB = [" + user.getUsername() + "]");
+        System.out.println("DEBUG: Role from DB = [" + user.getRole() + "]");
 
         String role = user.getRole();
 
