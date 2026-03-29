@@ -4,8 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
-    private static final String MYSQL_CONNECTION_PARAMS =
-            "useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    private static final String MYSQL_CONNECTION_PARAMS = "useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
     private static String normalizeMySqlJdbcUrl(String rawUrl) {
         if (rawUrl == null || rawUrl.trim().isEmpty()) {
@@ -13,8 +12,13 @@ public class DBConnection {
         }
 
         String dbUrl = rawUrl.trim();
+
+        // Railway Fix: replace mysql:// with jdbc:mysql://
+        if (dbUrl.startsWith("mysql://")) {
+            dbUrl = dbUrl.replaceFirst("mysql://", "jdbc:mysql://");
+        }
+
         if (!dbUrl.startsWith("jdbc:mysql://")) {
-            // Some hosting providers expose MYSQL_URL without jdbc prefix.
             dbUrl = "jdbc:mysql://" + dbUrl;
         }
 
@@ -49,10 +53,11 @@ public class DBConnection {
                 dbUrl = "jdbc:mysql://" + host + ":" + (port != null ? port : "3306") + "/" + dbName
                         + "?" + MYSQL_CONNECTION_PARAMS;
             } else {
-                // LOCAL FALLBACK
-                dbUrl = "jdbc:mysql://localhost:3306/leave_management?" + MYSQL_CONNECTION_PARAMS;
+                // Railway Fallback
+                dbUrl = "jdbc:mysql://hopper.proxy.rlwy.net:54877/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
                 user = (user != null) ? user : "root";
-                password = (password != null) ? password : "Sumanth#965";
+                password = (password != null) ? password : "nUbyUeChBGlaJOsVFEXajsCcnyhJZNOu"; // Update this with your
+                                                                                               // Railway password
             }
         }
         dbUrl = normalizeMySqlJdbcUrl(dbUrl);
