@@ -8,13 +8,9 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Copy the generated WAR file from the build stage
-# Assuming the WAR name matches what's in your pom.xml (usually artifactId.war)
+# Copy the runners and WAR from the build stage
 COPY --from=build /app/target/elms.war /app/elms.war
-
-# Download WebApp Runner to run the WAR file
-RUN apt-get update && apt-get install -y curl && \
-    curl -L https://repo1.maven.org/maven2/com/github/jsimone/webapp-runner/9.0.83.0/webapp-runner-9.0.83.0.jar -o webapp-runner.jar
+COPY --from=build /app/target/webapp-runner.jar /app/webapp-runner.jar
 
 # Render provides a $PORT environment variable
 EXPOSE 8080
