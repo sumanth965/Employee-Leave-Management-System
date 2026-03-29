@@ -4,6 +4,36 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
+    private static final String MYSQL_CONNECTION_PARAMS =
+            "useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+
+    private static String normalizeMySqlJdbcUrl(String rawUrl) {
+        if (rawUrl == null || rawUrl.trim().isEmpty()) {
+            return rawUrl;
+        }
+
+        String dbUrl = rawUrl.trim();
+        if (!dbUrl.startsWith("jdbc:mysql://")) {
+            // Some hosting providers expose MYSQL_URL without jdbc prefix.
+            dbUrl = "jdbc:mysql://" + dbUrl;
+        }
+
+        if (!dbUrl.contains("allowPublicKeyRetrieval=")) {
+            dbUrl += dbUrl.contains("?")
+                    ? "&allowPublicKeyRetrieval=true"
+                    : "?" + MYSQL_CONNECTION_PARAMS;
+        }
+
+        if (!dbUrl.contains("useSSL=")) {
+            dbUrl += dbUrl.contains("?") ? "&useSSL=false" : "?useSSL=false";
+        }
+
+        if (!dbUrl.contains("serverTimezone=")) {
+            dbUrl += dbUrl.contains("?") ? "&serverTimezone=UTC" : "?serverTimezone=UTC";
+        }
+
+        return dbUrl;
+    }
 
     public static Connection getConnection() {
         String dbUrl = System.getenv("MYSQL_URL");
@@ -17,17 +47,15 @@ public class DBConnection {
         if (dbUrl == null || dbUrl.isEmpty()) {
             if (host != null && !host.isEmpty()) {
                 dbUrl = "jdbc:mysql://" + host + ":" + (port != null ? port : "3306") + "/" + dbName
-                        + "?useSSL=false&serverTimezone=UTC";
+                        + "?" + MYSQL_CONNECTION_PARAMS;
             } else {
                 // LOCAL FALLBACK
-                dbUrl = "jdbc:mysql://localhost:3306/leave_management?useSSL=false&serverTimezone=UTC";
+                dbUrl = "jdbc:mysql://localhost:3306/leave_management?" + MYSQL_CONNECTION_PARAMS;
                 user = (user != null) ? user : "root";
                 password = (password != null) ? password : "Sumanth#965";
             }
-        } else if (!dbUrl.startsWith("jdbc:mysql://")) {
-            // Railway sometimes provides URL without the jdbc: prefix
-            dbUrl = "jdbc:mysql://" + dbUrl;
         }
+        dbUrl = normalizeMySqlJdbcUrl(dbUrl);
 
         try {
             System.out.println("LOADING MYSQL DRIVER...");
