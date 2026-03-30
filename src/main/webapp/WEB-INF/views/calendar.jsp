@@ -112,14 +112,15 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="cal-grid">
-                                                    <div class="cal-dow">Monday</div>
-                                                    <div class="cal-dow">Tuesday</div>
-                                                    <div class="cal-dow">Wednesday</div>
-                                                    <div class="cal-dow">Thursday</div>
-                                                    <div class="cal-dow">Friday</div>
-                                                    <div class="cal-dow">Saturday</div>
-                                                    <div class="cal-dow">Sunday</div>
+                                                <div class="cal-scroll">
+                                                    <div class="cal-grid">
+                                                        <div class="cal-dow"><span class="d-none d-sm-inline">Monday</span><span class="d-sm-none">Mon</span></div>
+                                                        <div class="cal-dow"><span class="d-none d-sm-inline">Tuesday</span><span class="d-sm-none">Tue</span></div>
+                                                        <div class="cal-dow"><span class="d-none d-sm-inline">Wednesday</span><span class="d-sm-none">Wed</span></div>
+                                                        <div class="cal-dow"><span class="d-none d-sm-inline">Thursday</span><span class="d-sm-none">Thu</span></div>
+                                                        <div class="cal-dow"><span class="d-none d-sm-inline">Friday</span><span class="d-sm-none">Fri</span></div>
+                                                        <div class="cal-dow"><span class="d-none d-sm-inline">Saturday</span><span class="d-sm-none">Sat</span></div>
+                                                        <div class="cal-dow"><span class="d-none d-sm-inline">Sunday</span><span class="d-sm-none">Sun</span></div>
 
                                                     <c:forEach var="row" items="${rows}">
                                                         <c:forEach var="day" items="${row}">
@@ -157,6 +158,7 @@
                                                             </div>
                                                         </c:forEach>
                                                     </c:forEach>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
